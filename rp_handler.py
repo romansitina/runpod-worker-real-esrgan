@@ -8,6 +8,7 @@ from basicsr.archs.rrdbnet_arch import RRDBNet
 from basicsr.utils.download_util import load_file_from_url
 from realesrgan import RealESRGANer
 # from realesrgan.archs.srvgg_arch import SRVGGNetCompac
+from PIL import Image
 
 GPU_ID = 0
 TMP_PATH = '/tmp/upscaler'
