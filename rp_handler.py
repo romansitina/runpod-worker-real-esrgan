@@ -1,4 +1,5 @@
 import os
+import io
 import uuid
 import base64
 import cv2
