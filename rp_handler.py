@@ -130,7 +130,7 @@ def upscale(
             bg_upsampler=upsampler
         )
 
-    img = cv2.imread(source_image_path, cv2.COLOR_RGB2BGR)
+    img = cv2.imread(source_image_path, cv2.IMREAD_UNCHANGED)
 
     try:
         if face_enhance:
@@ -141,7 +141,7 @@ def upscale(
         print('Error', error)
         print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
     else:
-        result_image = Image.fromarray(output)
+        result_image = Image.fromarray(cv2.cvtColor(output, cv2.COLOR_BGR2RGB))
         output_buffer = io.BytesIO()
         result_image.save(output_buffer, format=image_format)
         image_data = output_buffer.getvalue()
