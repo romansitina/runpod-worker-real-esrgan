@@ -3,6 +3,7 @@ import uuid
 import base64
 import cv2
 import glob
+import runpod
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from basicsr.utils.download_util import load_file_from_url
 from realesrgan import RealESRGANer
