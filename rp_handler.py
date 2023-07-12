@@ -163,7 +163,7 @@ def upscaling_api(input):
     if not os.path.exists(TMP_PATH):
         os.makedirs(TMP_PATH)
 
-    if 'source_image' not in input or 'target_image' not in input:
+    if 'source_image' not in input:
         raise Exception('Invalid payload')
 
     unique_id = uuid.uuid4()
