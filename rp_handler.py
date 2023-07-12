@@ -86,7 +86,7 @@ def upscale(
         raise KeyError(f'Unsupported model: {model_name}')
 
     # determine model paths
-    model_path = os.path.join('weights', args.model_name + '.pth')
+    model_path = os.path.join('weights', model_name + '.pth')
 
     if not os.path.isfile(model_path):
         ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
