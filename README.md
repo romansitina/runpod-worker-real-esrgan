@@ -1,4 +1,4 @@
-# Real-ESRGAN | RunPod Worker
+# Real-ESRGAN | RunPod Serverless Worker
 
 The is the source code for a RunPod worker that uses
 [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
