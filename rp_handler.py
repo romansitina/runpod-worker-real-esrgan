@@ -150,15 +150,14 @@ def upscale(
 
 def determine_file_extension(image_data):
     image_extension = None
-    # You can add more checks for other image formats if necessary
+
     if image_data.startswith('/9j/'):
         image_extension = '.jpg'
     elif image_data.startswith('iVBORw0Kg'):
         image_extension = '.png'
-    # Add more image format checks as needed
-
-    if image_extension is None:
-        raise ValueError('Invalid image data')
+    else:
+        # Default to png if we can't figure out the extension
+        image_extension = '.png'
 
     return image_extension
 
