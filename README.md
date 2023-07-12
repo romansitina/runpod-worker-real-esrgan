@@ -6,7 +6,7 @@ for Restoration/Upscaling.
 
 ## Building the Worker
 
-#### Note: This worker requires a RunPod Network Volume with Real-ESRGAN preinstalled in order to function correctly.
+#### Note: This worker requires a RunPod Network Volume this Python code preinstalled in order to function correctly.
 
 ### Network `Volume`
 
@@ -14,45 +14,52 @@ for Restoration/Upscaling.
 2. Attach the Network Volume to a Secure Cloud [GPU pod](https://www.runpod.io/console/gpu-secure-cloud).
 3. Select a light-weight template such as RunPod Pytorch.
 4. Deploy the GPU Cloud pod.
-5. Once the pod is up, open a Terminal and install inswapper:
+5. Once the pod is up, open a Terminal and install the required dependencies:
 ```bash
+# Link the cache to /workdpace so the container disk does not run out of space
+mv /root/.cache /workspace/.cache
+ln -s /workspace/.cache /root/.cache
+
+# Install the models
+mkdir -p /workspace/ESRGAN/models
+cd /workspace/ESRGAN/models
+wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
+wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth
+wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth
+wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth
+mkdir -p /workspace/GFPGAN/models
+wget -O /workspace/GFPGAN/models/GFPGANv1.3.pth https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
+
+# Install the worker application code and dependencies
 cd /workspace
-git clone https://github.com/xinntao/Real-ESRGAN.git
-cd Real-ESRGAN
+git clone https://github.com/ashleykleynhans/runpod-worker-real-esrgan.git
+cd runpod-worker-real-esrgan
 python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
-# TODO: Check rest of the instructions
+python3 setup.py develop
 ```
-6. Install the RunPod Python module which is required for the worker to function correctly within RunPod Serverless:
+6. Edit the `create_test_json.py` file and ensure that you set `SOURCE_IMAGE` to
+   a valid image to upscale (you can upload the image to your pod using
+   [runpodctl](https://github.com/runpod/runpodctl/releases)).
+7. Create the `test_input.json` file by running the `create_test_json.py` script:
 ```bash
-pip3 install runpod
+python3 create_test_json.py
 ```
-7. Run the example inference so that the models can be cached on
+8. Run an inference on the `test_input.json` input so that the models can be cached on
    your Network Volume, which will dramatically reduce cold start times for RunPod Serverless:
-# TODO: Fix
 ```bash
-python3 swapper.py \
-  --source_img /workspace/inswapper/data/src.jpg \
-  --target_img /workspace/inswapper/data/target.jpg \
-  --face_restore \
-  --background_enhance \
-  --face_upsample \
-  --upscale 1 \
-  --codeformer_fidelity 0.5
+python3 -u rp_handler.py
 ```
 
 ### Dockerfile
 
 The worker is built using a Dockerfile. The Dockerfile specifies the
-base image, environment variables, and system package dependencies
-
-The Python dependencies are specified in requirements.txt.
-The primary dependency is `runpod==0.10.0`.
+base image, environment variables, and system package dependencies.
 
 ## Running the Worker
 
-The worker can be run using the start.sh script. This script starts the
+The worker can be run using the `start.sh` script. This script starts the
 init system and runs the serverless handler script.
 
 ## API
@@ -62,10 +69,20 @@ The worker provides an API for inference. The API payload looks like this:
 ```json
 {
   "input": {
-    "image": "base64 encoded source image content"
+     "source_image": "base64 encoded source image content",
+     "model": "RealESRGAN_x4plus",
+     "scale": 2,
+     "face_enhance": true
   }
 }
 ```
+
+The following models are available by default:
+
+* RealESRGAN_x2plus
+* RealESRGAN_x4plus
+* RealESRNet_x4plus
+* RealESRGAN_x4plus_anime_6B
 
 ## Serverless Handler
 
