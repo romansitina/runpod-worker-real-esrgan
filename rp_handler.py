@@ -15,7 +15,6 @@ GPU_ID = 0
 TMP_PATH = '/tmp/upscaler'
 MODELS_PATH = '/workspace/ESRGAN/models'
 GFPGAN_MODEL_PATH = '/workspace/GFPGAN/models/GFPGANv1.3.pth'
-script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 # ---------------------------------------------------------------------------- #
