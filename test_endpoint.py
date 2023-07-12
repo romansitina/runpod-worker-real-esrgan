@@ -10,7 +10,7 @@ from PIL import Image
 RUNPOD_API_KEY = 'INSERT_RUNPOD_API_KEY_HERE'
 SERVERLESS_ENDPOINT_ID = 'INSERT_RUNPOD_ENDPOINT_ID_HERE'
 RUNPOD_ENDPOINT_BASE_URL = f'https://api.runpod.ai/v2/{SERVERLESS_ENDPOINT_ID}'
-SOURCE_IMAGE = 'data/src.png'
+SOURCE_IMAGE = 'data/src.jpg'
 
 
 def encode_image_to_base64(image_path):
@@ -36,7 +36,10 @@ if __name__ == '__main__':
     # Create the payload dictionary
     payload = {
         "input": {
-            "source_image": source_image_base64
+            "source_image": source_image_base64,
+            "model": "RealESRGAN_x4plus",
+            "scale": 2,
+            "face_enhance": True,
         }
     }
 

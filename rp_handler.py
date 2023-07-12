@@ -130,7 +130,7 @@ def upscale(
             bg_upsampler=upsampler
         )
 
-    img = cv2.imread(source_image_path, cv2.IMREAD_UNCHANGED)
+    img = cv2.imread(source_image_path, cv2.COLOR_RGB2BGR)
 
     try:
         if face_enhance:
@@ -143,7 +143,7 @@ def upscale(
     else:
         result_image = Image.fromarray(output)
         output_buffer = io.BytesIO()
-        result_image.save(output_buffer, format='JPEG')
+        result_image.save(output_buffer, format=image_format)
         image_data = output_buffer.getvalue()
         return base64.b64encode(image_data).decode('utf-8')
 
