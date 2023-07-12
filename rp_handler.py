@@ -141,7 +141,7 @@ def upscale(
         print('Error', error)
         print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
     else:
-        result_image = Image.fromarray(result_image)
+        result_image = Image.fromarray(output)
         output_buffer = io.BytesIO()
         result_image.save(output_buffer, format='JPEG')
         image_data = output_buffer.getvalue()
