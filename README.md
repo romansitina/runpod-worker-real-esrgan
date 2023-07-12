@@ -8,7 +8,7 @@ for Restoration/Upscaling.
 
 #### Note: This worker requires a RunPod Network Volume this Python code preinstalled in order to function correctly.
 
-### Network `Volume`
+### Network Volume
 
 1. Create a [RunPod Network Volume](https://www.runpod.io/console/user/storage).
 2. Attach the Network Volume to a Secure Cloud [GPU pod](https://www.runpod.io/console/gpu-secure-cloud).
