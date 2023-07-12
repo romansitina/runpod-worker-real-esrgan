@@ -22,6 +22,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # ---------------------------------------------------------------------------- #
 def upscale(
         source_image_path,
+        image_extension,
         model_name='RealESRGAN_x4plus',
         outscale=4,
         face_enhance=False,
@@ -40,6 +41,8 @@ def upscale(
         - realesr-animevideov3
         - realesr-general-x4v3
 
+    image_extension: .jpg or .png
+
     outscale: The final upsampling scale of the image
 
     face_enhance:
@@ -57,6 +60,13 @@ def upscale(
 
     # determine models according to model names
     model_name = model_name.split('.')[0]
+
+    if image_extension == '.jpg':
+        image_format = 'JPEG'
+    elif image_extension == '.png':
+        image_format = 'PNG'
+    else:
+        raise ValueError(f'Unsupported image type, must be either JPEG or PNG')
 
     if model_name == 'RealESRGAN_x4plus':  # x4 RRDBNet model
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
@@ -83,7 +93,7 @@ def upscale(
     #         'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth'
     #     ]
     else:
-        raise KeyError(f'Unsupported model: {model_name}')
+        raise ValueError(f'Unsupported model: {model_name}')
 
     # determine model paths
     model_path = os.path.join(MODELS_PATH, model_name + '.pth')
@@ -131,7 +141,11 @@ def upscale(
         print('Error', error)
         print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
     else:
-        return Image.fromarray(cv2.cvtColor(output, cv2.COLOR_BGR2RGB))
+        result_image = Image.fromarray(result_image)
+        output_buffer = io.BytesIO()
+        result_image.save(output_buffer, format='JPEG')
+        image_data = output_buffer.getvalue()
+        return base64.b64encode(image_data).decode('utf-8')
 
 
 def determine_file_extension(image_data):
@@ -158,6 +172,9 @@ def upscaling_api(input):
 
     unique_id = uuid.uuid4()
     source_image_data = input['source_image']
+    model_name = input['model']
+    outscale = input['scale']
+    face_enhance = input['face_enhance']
 
     # Decode the source image data
     source_image = base64.b64decode(source_image_data)
@@ -169,7 +186,13 @@ def upscaling_api(input):
         source_file.write(source_image)
 
     try:
-        result_image = upscale(source_image_path)
+        result_image = upscale(
+            source_image_path,
+            image_extension,
+            model_name,
+            outscale,
+            face_enhance
+        )
     except Exception as e:
         raise Exception('Upscale failed')
 
