@@ -188,7 +188,7 @@ def upscaling_api(input):
     try:
         result_image = upscale(
             source_image_path,
-            image_extension,
+            source_file_extension,
             model_name,
             outscale,
             face_enhance
