@@ -131,7 +131,7 @@ def upscale(
         print('Error', error)
         print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
     else:
-        return Image.fromarray(cv2.cvtColor(result, cv2.COLOR_BGR2RGB))
+        return Image.fromarray(cv2.cvtColor(output, cv2.COLOR_BGR2RGB))
 
 
 def determine_file_extension(image_data):
