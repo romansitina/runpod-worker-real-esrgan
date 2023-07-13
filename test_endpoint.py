@@ -87,6 +87,7 @@ if __name__ == '__main__':
                             print(f'RunPod request {request_id} is {job_status}, sleeping for 5 seconds...')
                             time.sleep(5)
                         elif job_status == 'FAILED':
+                            request_in_queue = False
                             print(f'RunPod request {request_id} failed')
                         elif job_status == 'COMPLETED':
                             request_in_queue = False
