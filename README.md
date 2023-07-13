@@ -1,7 +1,7 @@
 # Real-ESRGAN | RunPod Serverless Worker
 
-The is the source code for a RunPod worker that uses
-[Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
+The is the source code for a [RunPod](https://runpod.io?ref=w18gds2n)
+worker that uses [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
 for Restoration/Upscaling.
 
 ## Building the Worker
@@ -10,11 +10,12 @@ for Restoration/Upscaling.
 
 ### Network Volume
 
-1. Create a [RunPod Network Volume](https://www.runpod.io/console/user/storage).
-2. Attach the Network Volume to a Secure Cloud [GPU pod](https://www.runpod.io/console/gpu-secure-cloud).
-3. Select a light-weight template such as RunPod Pytorch.
-4. Deploy the GPU Cloud pod.
-5. Once the pod is up, open a Terminal and install the required dependencies:
+1. [Create a RunPod Account](https://runpod.io?ref=w18gds2n).
+2. Create a [RunPod Network Volume](https://www.runpod.io/console/user/storage).
+3. Attach the Network Volume to a Secure Cloud [GPU pod](https://www.runpod.io/console/gpu-secure-cloud).
+4. Select a light-weight template such as RunPod Pytorch.
+5. Deploy the GPU Cloud pod.
+6. Once the pod is up, open a Terminal and install the required dependencies:
 ```bash
 # Link the cache to /workdpace so the container disk does not run out of space
 mv /root/.cache /workspace/.cache
@@ -39,14 +40,14 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 python3 setup.py develop
 ```
-6. Edit the `create_test_json.py` file and ensure that you set `SOURCE_IMAGE` to
+7. Edit the `create_test_json.py` file and ensure that you set `SOURCE_IMAGE` to
    a valid image to upscale (you can upload the image to your pod using
    [runpodctl](https://github.com/runpod/runpodctl/releases)).
-7. Create the `test_input.json` file by running the `create_test_json.py` script:
+8. Create the `test_input.json` file by running the `create_test_json.py` script:
 ```bash
 python3 create_test_json.py
 ```
-8. Run an inference on the `test_input.json` input so that the models can be cached on
+9. Run an inference on the `test_input.json` input so that the models can be cached on
    your Network Volume, which will dramatically reduce cold start times for RunPod Serverless:
 ```bash
 python3 -u rp_handler.py
