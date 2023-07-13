@@ -62,7 +62,10 @@ if __name__ == '__main__':
         if 'output' in resp_json and 'image' in resp_json['output']:
             save_result_image(resp_json)
         else:
-            if 'status' in resp_json and resp_json['status'] == 'IN_QUEUE':
+            job_status = resp_json['status']
+            print(f'Job status: {job_status}')
+
+            if job_status == 'IN_QUEUE' or job_status == 'IN_PROGRESS':
                 request_id = resp_json['id']
                 request_in_queue = True
 
@@ -78,17 +81,26 @@ if __name__ == '__main__':
 
                     if r.status_code == 200:
                         resp_json = r.json()
+                        job_status = resp_json['status']
 
-                        if resp_json['status'] == 'IN_QUEUE' or resp_json['status'] == 'IN_PROGRESS':
-                            print(f'RunPod inswapper request {request_id} is still in the queue, sleeping for 5 seconds...')
+                        if job_status == 'IN_QUEUE' or job_status == 'IN_PROGRESS':
+                            print(f'RunPod request {request_id} is {job_status}, sleeping for 5 seconds...')
                             time.sleep(5)
-                        elif resp_json['status'] == 'FAILED':
-                            print(f'RunPod inswapper request {request_id} failed')
-                        elif resp_json['status'] == 'COMPLETED':
-                            print(f'RunPod inswapper request {request_id} completed')
+                        elif job_status == 'FAILED':
+                            print(f'RunPod request {request_id} failed')
+                        elif job_status == 'COMPLETED':
+                            request_in_queue = False
+                            print(f'RunPod request {request_id} completed')
                             save_result_image(resp_json)
+                        elif job_status == 'TIMED_OUT':
+                            request_in_queue = False
+                            print(f'ERROR: RunPod request {request_id} timed out')
                         else:
-                            print(f'Invalid status response from RunPod status endpoint')
+                            request_in_queue = False
+                            print(f'ERROR: Invalid status response from RunPod status endpoint')
+                            print(json.dumps(resp_json, indent=4, default=str))
+            elif job_status == 'COMPLETED' and resp_json['output']['status'] == 'error':
+                print(f'ERROR: {resp_json["output"]["message"]}')
             else:
                 print(json.dumps(resp_json, indent=4, default=str))
     else:
