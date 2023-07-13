@@ -13,7 +13,7 @@ from realesrgan import RealESRGANer
 from PIL import Image
 
 GPU_ID = 0
-TMP_PATH = '/tmp/upscaler'
+TMP_PATH = '/workspace/tmp'
 MODELS_PATH = '/workspace/ESRGAN/models'
 GFPGAN_MODEL_PATH = '/workspace/GFPGAN/models/GFPGANv1.3.pth'
 
