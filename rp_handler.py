@@ -268,7 +268,7 @@ def handler(event):
             'errors': validated_input['errors']
         }
 
-    return upscaling_api(validated_input)
+    return upscaling_api(validated_input['validated_input'])
 
 
 if __name__ == "__main__":
