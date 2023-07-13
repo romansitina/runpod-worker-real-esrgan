@@ -21,6 +21,9 @@ def encode_image_to_base64(image_path):
 
 
 def save_result_image(resp_json):
+    if resp_json['output']['image'] is None:
+        raise Exception('No image received from RunPod endpoint')
+
     img = Image.open(io.BytesIO(base64.b64decode(resp_json['output']['image'])))
     output_file = f'{uuid.uuid4()}.jpg'
 

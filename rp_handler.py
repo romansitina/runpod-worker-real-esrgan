@@ -5,6 +5,7 @@ import base64
 import cv2
 import glob
 import runpod
+from runpod.serverless.utils.rp_validator import validate
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from basicsr.utils.download_util import load_file_from_url
 from realesrgan import RealESRGANer
@@ -16,6 +17,50 @@ TMP_PATH = '/tmp/upscaler'
 MODELS_PATH = '/workspace/ESRGAN/models'
 GFPGAN_MODEL_PATH = '/workspace/GFPGAN/models/GFPGANv1.3.pth'
 
+INPUT_SCHEMA = {
+    'source_image': {
+        'type': str,
+        'required': True
+    },
+    'model': {
+        'type': str,
+        'required': False,
+        'default': 'RealESRGAN_x4plus',
+        'constraints': lambda model: model in [
+            'RealESRGAN_x4plus',
+            'RealESRNet_x4plus',
+            'RealESRGAN_x4plus_anime_6B',
+            'RealESRGAN_x2plus',
+        ]
+    },
+    'scale': {
+        'type': float,
+        'required': False,
+        'default': 2,
+        'constraints': lambda scale: 0 < scale < 16
+    },
+    'face_enhance': {
+        'type': bool,
+        'required': False,
+        'default': False
+    },
+    'tile': {
+        'type': int,
+        'required': False,
+        'default': 0,
+    },
+    'tile_pad': {
+        'type': int,
+        'required': False,
+        'default': 10,
+    },
+    'pre_pad': {
+        'type': int,
+        'required': False,
+        'default': 0,
+    }
+}
+
 
 # ---------------------------------------------------------------------------- #
 # Application Functions                                                        #
@@ -26,11 +71,11 @@ def upscale(
         model_name='RealESRGAN_x4plus',
         outscale=4,
         face_enhance=False,
-        fp32=False,
         tile=0,
         tile_pad=10,
         pre_pad=0,
-        denoise_strength=0.5
+        denoise_strength=0.5,
+        fp32=False,
 ):
     """
     model_name options:
@@ -45,7 +90,7 @@ def upscale(
 
     outscale: The final upsampling scale of the image
 
-    face_enhance:
+    face_enhance: Whether or not to enhance the face
 
     tile: Tile size, 0 for no tile during testing
 
@@ -137,9 +182,8 @@ def upscale(
             _, _, output = face_enhancer.enhance(img, has_aligned=False, only_center_face=False, paste_back=True)
         else:
             output, _ = upsampler.enhance(img, outscale=outscale)
-    except RuntimeError as error:
-        print('Error', error)
-        print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
+    except RuntimeError as e:
+        raise RuntimeError(e)
     else:
         result_image = Image.fromarray(cv2.cvtColor(output, cv2.COLOR_BGR2RGB))
         output_buffer = io.BytesIO()
@@ -151,12 +195,15 @@ def upscale(
 def determine_file_extension(image_data):
     image_extension = None
 
-    if image_data.startswith('/9j/'):
-        image_extension = '.jpg'
-    elif image_data.startswith('iVBORw0Kg'):
-        image_extension = '.png'
-    else:
-        # Default to png if we can't figure out the extension
+    try:
+        if image_data.startswith('/9j/'):
+            image_extension = '.jpg'
+        elif image_data.startswith('iVBORw0Kg'):
+            image_extension = '.png'
+        else:
+            # Default to png if we can't figure out the extension
+            image_extension = '.png'
+    except Exception as e:
         image_extension = '.png'
 
     return image_extension
@@ -166,14 +213,14 @@ def upscaling_api(input):
     if not os.path.exists(TMP_PATH):
         os.makedirs(TMP_PATH)
 
-    if 'source_image' not in input:
-        raise Exception('Invalid payload')
-
     unique_id = uuid.uuid4()
     source_image_data = input['source_image']
     model_name = input['model']
     outscale = input['scale']
     face_enhance = input['face_enhance']
+    tile = input['tile']
+    tile_pad = input['tile_pad']
+    pre_pad = input['pre_pad']
 
     # Decode the source image data
     source_image = base64.b64decode(source_image_data)
@@ -190,10 +237,16 @@ def upscaling_api(input):
             source_file_extension,
             model_name,
             outscale,
-            face_enhance
+            face_enhance,
+            tile,
+            tile_pad,
+            pre_pad
         )
     except Exception as e:
-        raise Exception('Upscale failed')
+        return {
+            'status': 'error',
+            'message': e
+        }
 
     # Clean up temporary images
     os.remove(source_image_path)
@@ -208,11 +261,14 @@ def upscaling_api(input):
 # RunPod Handler                                                               #
 # ---------------------------------------------------------------------------- #
 def handler(event):
-    '''
-    This is the handler function that will be called by the serverless.
-    '''
+    validated_input = validate(event['input'], INPUT_SCHEMA)
 
-    return upscaling_api(event["input"])
+    if 'errors' in validated_input:
+        return {
+            'errors': validated_input['errors']
+        }
+
+    return upscaling_api(validated_input)
 
 
 if __name__ == "__main__":
