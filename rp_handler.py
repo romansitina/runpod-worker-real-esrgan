@@ -245,7 +245,7 @@ def upscaling_api(input):
     except Exception as e:
         return {
             'status': 'error',
-            'message': e
+            'message': str(e)
         }
 
     # Clean up temporary images
