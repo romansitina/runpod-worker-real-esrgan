@@ -2,7 +2,7 @@
 import base64
 import json
 
-SOURCE_IMAGE = 'src_upscale.jpeg'
+SOURCE_IMAGE = 'data/src_upscale.jpeg'
 
 
 def encode_image_to_base64(image_path):

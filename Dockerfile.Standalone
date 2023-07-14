@@ -1,0 +1,66 @@
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_PREFER_BINARY=1 \
+    PYTHONUNBUFFERED=1
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Upgrade apt packages and install required dependencies
+RUN apt update && \
+    apt upgrade -y && \
+    apt install -y \
+      python3-dev \
+      python3.10-venv \
+      fonts-dejavu-core \
+      rsync \
+      git \
+      jq \
+      moreutils \
+      aria2 \
+      wget \
+      curl \
+      libglib2.0-0 \
+      libsm6 \
+      libgl1 \
+      libxrender1 \
+      libxext6 \
+      ffmpeg \
+      libgoogle-perftools-dev \
+      procps && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean -y
+
+# Install the models
+WORKDIR /workspace
+RUN mkdir -p /workspace/ESRGAN/models && \
+    cd /workspace/ESRGAN/models && \
+    wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth && \
+    wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth && \
+    wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth && \
+    wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth && \
+    mkdir -p /workspace/GFPGAN/models && \
+    wget -O /workspace/GFPGAN/models/GFPGANv1.3.pth https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
+
+# 1. Clone the worker repo
+# 2. Create and activate Python venv
+# 3. Install requirements
+# 4. Setup the local requirements
+# 5. Create test_input.json file for test inference
+# 6. Run test inference using rp_handler.py to cache the models
+RUN git clone https://github.com/ashleykleynhans/runpod-worker-real-esrgan.git && \
+    cd runpod-worker-real-esrgan && \
+    python3 -m venv venv && \
+    source venv/bin/activate && \
+    pip3 install -r requirements.txt && \
+    python3 setup.py develop && \
+    python3 create_test_json.py && \
+    python3 -u rp_handler.py
+
+# Docker container start script
+ADD start_standalone.sh /start.sh
+
+# Start the container
+RUN chmod +x /start.sh
+CMD /start.sh

@@ -1,14 +1,17 @@
 # Real-ESRGAN | RunPod Serverless Worker
 
 The is the source code for a [RunPod](https://runpod.io?ref=w18gds2n)
-worker that uses [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
+Serverless worker that uses [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
 for Restoration/Upscaling.
 
 ## Building the Worker
 
-#### Note: This worker requires a RunPod Network Volume this Python code preinstalled in order to function correctly.
+### Option 1: Network Volume
 
-### Network Volume
+This will store your application on a Runpod Network Volume and
+build a light weight Docker image that runs everything
+from the Network volume without installing the application
+inside the Docker image.
 
 1. [Create a RunPod Account](https://runpod.io?ref=w18gds2n).
 2. Create a [RunPod Network Volume](https://www.runpod.io/console/user/storage).
@@ -52,16 +55,35 @@ python3 create_test_json.py
 ```bash
 python3 -u rp_handler.py
 ```
+10. Sign up for a Docker hub account if you don't already have one.
+11. Build the Docker image and push to Docker hub:
+```bash
+docker build -t dockerhub-username/runpod-worker-real-esrgan:1.0.0 -f Dockerfile.Network_Volume .
+docker login
+docker push dockerhub-username/runpod-worker-real-esrgan:1.0.0
+```
 
-### Dockerfile
+### Option 2: Standalone
 
-The worker is built using a Dockerfile. The Dockerfile specifies the
-base image, environment variables, and system package dependencies.
+This is the simpler option.  No network volume is required.
+The entire application will be stored within the Docker image
+but will obviously create a more bulky Docker image as a result.
 
-## Running the Worker
+```bash
+docker build -t dockerhub-username/runpod-worker-real-esrgan:1.0.0 -f Dockerfile.Standalone .
+docker login
+docker push dockerhub-username/runpod-worker-real-esrgan:1.0.0
+```
 
-The worker can be run using the `start.sh` script. This script starts the
-init system and runs the serverless handler script.
+## Dockerfile
+
+There are 2 different Dockerfile configurations
+
+1. Network_Volume - See Option 1 Above.
+2. Standalone - See Option 2 Above (No Network Volume is required for this option).
+
+The worker is built using one of the two Dockerfile configurations
+depending on your specific requirements.
 
 ## API
 
@@ -100,3 +122,22 @@ returns the output as a JSON response in the following format:
   }
 }
 ```
+
+## Acknowledgements
+
+- [Real-ESRGAN (ai-forever)](https://github.com/ai-forever/Real-ESRGAN)
+
+## Community and Contributing
+
+Pull requests and issues on [GitHub](https://github.com/ashleykleynhans/runpod-worker-real-esrgan)
+are welcome. Bug fixes and new features are encouraged.
+
+You can contact me and get help with deploying your Serverless
+worker to RunPod on the RunPod Discord Server below,
+my username is **ashleyk**.
+
+<a target="_blank" href="https://discord.gg/pJ3P2DbUUq">![Discord Banner 2](https://discordapp.com/api/guilds/912829806415085598/widget.png?style=banner2)</a>
+
+## Appreciate my work?
+
+<a href="https://www.buymeacoffee.com/ashleyk" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>

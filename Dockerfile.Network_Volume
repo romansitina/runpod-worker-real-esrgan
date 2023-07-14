@@ -32,7 +32,7 @@ RUN apt update && \
     apt-get clean -y
 
 # Docker container start script
-ADD start.sh /start.sh
+ADD start_network_volume.sh /start.sh
 
 # Start the container
 RUN chmod +x /start.sh
