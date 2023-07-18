@@ -64,6 +64,7 @@ RUN git clone https://github.com/ashleykleynhans/runpod-worker-real-esrgan.git &
 
 # Docker container start script
 ADD start_standalone.sh /start.sh
+ADD rp_handler.py /workspace/runpod-worker-real-esrgan/rp_handler.py
 
 # Start the container
 RUN chmod +x /start.sh
