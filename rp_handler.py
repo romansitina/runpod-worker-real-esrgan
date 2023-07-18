@@ -31,6 +31,8 @@ INPUT_SCHEMA = {
             'RealESRNet_x4plus',
             'RealESRGAN_x4plus_anime_6B',
             'RealESRGAN_x2plus',
+            '4x-UltraSharp',
+            'lollypop'
         ]
     },
     'scale': {
