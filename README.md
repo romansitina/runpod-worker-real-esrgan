@@ -1,6 +1,6 @@
 # Real-ESRGAN | RunPod Serverless Worker
 
-The is the source code for a [RunPod](https://runpod.io?ref=w18gds2n)
+The is the source code for a [RunPod](https://runpod.io?ref=2xxro4sy)
 Serverless worker that uses [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
 for Restoration/Upscaling.
 
@@ -13,7 +13,7 @@ build a light weight Docker image that runs everything
 from the Network volume without installing the application
 inside the Docker image.
 
-1. [Create a RunPod Account](https://runpod.io?ref=w18gds2n).
+1. [Create a RunPod Account](https://runpod.io?ref=2xxro4sy).
 2. Create a [RunPod Network Volume](https://www.runpod.io/console/user/storage).
 3. Attach the Network Volume to a Secure Cloud [GPU pod](https://www.runpod.io/console/gpu-secure-cloud).
 4. Select a light-weight template such as RunPod Pytorch.
@@ -36,7 +36,9 @@ wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_
 wget https://huggingface.co/snappic/upscalers/resolve/main/4x-UltraSharp.pth
 wget https://huggingface.co/snappic/upscalers/resolve/main/lollypop.pth
 mkdir -p /workspace/GFPGAN/models
-wget -O /workspace/GFPGAN/models/GFPGANv1.3.pth https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
+# Download GFPGAN model
+cd /workspace/ESRGAN/models
+wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
 
 # Install the worker application code and dependencies
 cd /workspace
