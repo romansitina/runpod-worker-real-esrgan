@@ -7,4 +7,5 @@ Pillow
 torch
 torchvision
 tqdm
-runpod
+python-dotenv
+runpod>=0.10.0

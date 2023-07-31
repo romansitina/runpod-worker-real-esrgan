@@ -4,92 +4,21 @@ The is the source code for a [RunPod](https://runpod.io?ref=2xxro4sy)
 Serverless worker that uses [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
 for Restoration/Upscaling.
 
-## Building the Worker
+## Model
 
-### Option 1: Network Volume
+The following models are available by default:
 
-This will store your application on a Runpod Network Volume and
-build a light weight Docker image that runs everything
-from the Network volume without installing the application
-inside the Docker image.
+* RealESRGAN_x2plus
+* RealESRGAN_x4plus
+* RealESRNet_x4plus
+* RealESRGAN_x4plus_anime_6B
 
-1. [Create a RunPod Account](https://runpod.io?ref=2xxro4sy).
-2. Create a [RunPod Network Volume](https://www.runpod.io/console/user/storage).
-3. Attach the Network Volume to a Secure Cloud [GPU pod](https://www.runpod.io/console/gpu-secure-cloud).
-4. Select a light-weight template such as RunPod Pytorch.
-5. Deploy the GPU Cloud pod.
-6. Once the pod is up, open a Terminal and install the required dependencies:
-```bash
-# Link the cache to /workdpace so the container disk does not run out of space
-mv /root/.cache /workspace/.cache
-ln -s /workspace/.cache /root/.cache
+## Building the Docker image that will be used by the Serverless Worker
 
-# Install the models
-mkdir -p /workspace/ESRGAN/models
-cd /workspace/ESRGAN/models
-# Download the official Real-ESRGAN models
-wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
-wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth
-wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth
-wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth
-# Download additional models from Huggingface
-wget https://huggingface.co/snappic/upscalers/resolve/main/4x-UltraSharp.pth
-wget https://huggingface.co/snappic/upscalers/resolve/main/lollypop.pth
-mkdir -p /workspace/GFPGAN/models
-# Download GFPGAN model
-cd /workspace/ESRGAN/models
-wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
+There are two options:
 
-# Install the worker application code and dependencies
-cd /workspace
-git clone https://github.com/ashleykleynhans/runpod-worker-real-esrgan.git
-cd runpod-worker-real-esrgan
-python3 -m venv venv
-source venv/bin/activate
-pip3 install -r requirements.txt
-python3 setup.py develop
-```
-7. Edit the `create_test_json.py` file and ensure that you set `SOURCE_IMAGE` to
-   a valid image to upscale (you can upload the image to your pod using
-   [runpodctl](https://github.com/runpod/runpodctl/releases)).
-8. Create the `test_input.json` file by running the `create_test_json.py` script:
-```bash
-python3 create_test_json.py
-```
-9. Run an inference on the `test_input.json` input so that the models can be cached on
-   your Network Volume, which will dramatically reduce cold start times for RunPod Serverless:
-```bash
-python3 -u rp_handler.py
-```
-10. Sign up for a Docker hub account if you don't already have one.
-11. Build the Docker image and push to Docker hub:
-```bash
-docker build -t dockerhub-username/runpod-worker-real-esrgan:1.0.0 -f Dockerfile.Network_Volume .
-docker login
-docker push dockerhub-username/runpod-worker-real-esrgan:1.0.0
-```
-
-### Option 2: Standalone
-
-This is the simpler option.  No network volume is required.
-The entire application will be stored within the Docker image
-but will obviously create a more bulky Docker image as a result.
-
-```bash
-docker build -t dockerhub-username/runpod-worker-real-esrgan:1.0.0 -f Dockerfile.Standalone .
-docker login
-docker push dockerhub-username/runpod-worker-real-esrgan:1.0.0
-```
-
-## Dockerfile
-
-There are 2 different Dockerfile configurations
-
-1. Network_Volume - See Option 1 Above.
-2. Standalone - See Option 2 Above (No Network Volume is required for this option).
-
-The worker is built using one of the two Dockerfile configurations
-depending on your specific requirements.
+1. [Network Volume](docs/building/with-network-volume.md)
+2. [Standalone](docs/building/without-network-volume.md) (without Network Volume)
 
 ## API
 
@@ -105,13 +34,6 @@ The worker provides an API for inference. The API payload looks like this:
   }
 }
 ```
-
-The following models are available by default:
-
-* RealESRGAN_x2plus
-* RealESRGAN_x4plus
-* RealESRNet_x4plus
-* RealESRGAN_x4plus_anime_6B
 
 ## Serverless Handler
 
