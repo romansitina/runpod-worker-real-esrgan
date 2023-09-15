@@ -8,4 +8,4 @@ torch
 torchvision
 tqdm
 python-dotenv
-runpod>=0.10.0
+runpod

@@ -29,7 +29,7 @@ wget https://huggingface.co/snappic/upscalers/resolve/main/4x-UltraSharp.pth
 wget https://huggingface.co/snappic/upscalers/resolve/main/lollypop.pth
 mkdir -p /workspace/GFPGAN/models
 # Download GFPGAN model
-cd /workspace/ESRGAN/models
+cd /workspace/GFPGAN/models
 wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
 
 # Install the worker application code and dependencies
