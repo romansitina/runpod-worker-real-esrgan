@@ -11,4 +11,4 @@ echo "Starting RunPod Handler"
 export PYTHONUNBUFFERED=1
 source /workspace/runpod-worker-real-esrgan/venv/bin/activate
 cd /workspace/runpod-worker-real-esrgan
-python -u rp_handler.py
+python3 -u rp_handler.py
