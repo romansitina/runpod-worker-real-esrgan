@@ -251,16 +251,12 @@ def upscaling_api(input):
             pre_pad
         )
     except Exception as e:
-        return {
-            'status': 'error',
-            'message': str(e)
-        }
+        raise
 
     # Clean up temporary images
     os.remove(source_image_path)
 
     return {
-        'status': 'ok',
         'image': result_image
     }
 
@@ -280,7 +276,7 @@ def handler(event):
 
 
 if __name__ == "__main__":
-    print("Starting RunPod Serverless...")
+    print('Starting RunPod Serverless...')
     runpod.serverless.start(
         {
             'handler': handler
