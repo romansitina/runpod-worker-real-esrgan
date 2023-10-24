@@ -11,57 +11,13 @@ from basicsr.utils.download_util import load_file_from_url
 from realesrgan import RealESRGANer
 # from realesrgan.archs.srvgg_arch import SRVGGNetCompac
 from PIL import Image
+from schemas.input import INPUT_SCHEMA
 
 GPU_ID = 0
-TMP_PATH = '/workspace/tmp'
-MODELS_PATH = '/workspace/ESRGAN/models'
-GFPGAN_MODEL_PATH = '/workspace/GFPGAN/models/GFPGANv1.3.pth'
-
-INPUT_SCHEMA = {
-    'source_image': {
-        'type': str,
-        'required': True
-    },
-    'model': {
-        'type': str,
-        'required': False,
-        'default': 'RealESRGAN_x4plus',
-        'constraints': lambda model: model in [
-            'RealESRGAN_x4plus',
-            'RealESRNet_x4plus',
-            'RealESRGAN_x4plus_anime_6B',
-            'RealESRGAN_x2plus',
-            '4x-UltraSharp',
-            'lollypop'
-        ]
-    },
-    'scale': {
-        'type': float,
-        'required': False,
-        'default': 2,
-        'constraints': lambda scale: 0 < scale < 16
-    },
-    'face_enhance': {
-        'type': bool,
-        'required': False,
-        'default': False
-    },
-    'tile': {
-        'type': int,
-        'required': False,
-        'default': 0,
-    },
-    'tile_pad': {
-        'type': int,
-        'required': False,
-        'default': 10,
-    },
-    'pre_pad': {
-        'type': int,
-        'required': False,
-        'default': 0,
-    }
-}
+VOLUME_PATH = '/workspace'
+TMP_PATH = f'{VOLUME_PATH}/tmp'
+MODELS_PATH = f'{VOLUME_PATH}/models/ESRGAN'
+GFPGAN_MODEL_PATH = f'{VOLUME_PATH}/models/GFPGAN/GFPGANv1.3.pth'
 
 
 # ---------------------------------------------------------------------------- #
