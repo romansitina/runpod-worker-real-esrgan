@@ -17,19 +17,19 @@ mv /root/.cache /workspace/.cache
 ln -s /workspace/.cache /root/.cache
 
 # Install the models
-mkdir -p /workspace/ESRGAN/models
-cd /workspace/ESRGAN/models
+mkdir -p /workspace/models/ESRGAN
+cd /workspace/models/ESRGAN
 # Download the official Real-ESRGAN models
 wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
 wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth
 wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth
 wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth
 # Download additional models from Huggingface
-wget https://huggingface.co/snappic/upscalers/resolve/main/4x-UltraSharp.pth
-wget https://huggingface.co/snappic/upscalers/resolve/main/lollypop.pth
-mkdir -p /workspace/GFPGAN/models
+#wget https://huggingface.co/snappic/upscalers/resolve/main/4x-UltraSharp.pth
+#wget https://huggingface.co/snappic/upscalers/resolve/main/lollypop.pth
+mkdir -p /workspace/models/GFPGAN
 # Download GFPGAN model
-cd /workspace/GFPGAN/models
+cd /workspace/models/GFPGAN
 wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
 
 # Install the worker application code and dependencies
