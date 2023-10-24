@@ -19,9 +19,10 @@ if __name__ == '__main__':
     payload = {
         "input": {
             "source_image": source_image_base64,
-            "model": "RealESRGAN_x2plus",
+            "model": "RealESRGAN_x4plus",
             "scale": 2,
-            "face_enhance": True
+            "face_enhance": True,
+            "half": False
         }
     }
 

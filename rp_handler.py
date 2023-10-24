@@ -32,8 +32,8 @@ def upscale(
         tile=0,
         tile_pad=10,
         pre_pad=0,
-        denoise_strength=0.5,
-        fp32=False,
+        half=False,
+        denoise_strength=0.5
 ):
     """
     model_name options:
@@ -125,7 +125,7 @@ def upscale(
         tile=tile,
         tile_pad=tile_pad,
         pre_pad=pre_pad,
-        half=not fp32,
+        half=half,
         gpu_id=GPU_ID
     )
 
@@ -185,6 +185,7 @@ def upscaling_api(input):
     tile = input['tile']
     tile_pad = input['tile_pad']
     pre_pad = input['pre_pad']
+    half = input['half']
 
     # Decode the source image data
     source_image = base64.b64decode(source_image_data)
@@ -204,7 +205,8 @@ def upscaling_api(input):
             face_enhance,
             tile,
             tile_pad,
-            pre_pad
+            pre_pad,
+            half
         )
     except Exception as e:
         raise

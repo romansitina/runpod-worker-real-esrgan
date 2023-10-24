@@ -39,5 +39,10 @@ INPUT_SCHEMA = {
         'type': int,
         'required': False,
         'default': 0,
+    },
+    'half': {
+        'type': bool,
+        'required': False,
+        'default': False
     }
 }
