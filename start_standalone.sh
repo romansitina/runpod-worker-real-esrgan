@@ -9,6 +9,5 @@ ln -s /runpod-volume/.cache /root/.cache
 
 echo "Starting RunPod Handler"
 export PYTHONUNBUFFERED=1
-source /workspace/runpod-worker-real-esrgan/venv/bin/activate
 cd /workspace/runpod-worker-real-esrgan
 python3 -u rp_handler.py
