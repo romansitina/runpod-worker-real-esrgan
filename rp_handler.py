@@ -141,6 +141,9 @@ def upscale(
 
     img = cv2.imread(source_image_path, cv2.IMREAD_UNCHANGED)
 
+    if img is None:
+        raise RuntimeError(f'Source image ({source_image_path}) is corrupt')
+
     try:
         if face_enhance:
             _, _, output = face_enhancer.enhance(img, has_aligned=False, only_center_face=False, paste_back=True)
