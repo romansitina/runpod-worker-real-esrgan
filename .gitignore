@@ -165,3 +165,6 @@ CodeFormer
 test_input.json
 *.jpg
 models
+gfpgan
+tmp
+*.jpeg

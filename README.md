@@ -13,6 +13,11 @@ The following models are available by default:
 * RealESRNet_x4plus
 * RealESRGAN_x4plus_anime_6B
 
+## Testing
+
+1. [Local Testing](docs/testing/local.md)
+2. [RunPod Testing](docs/testing/runpod.md)
+
 ## Building the Docker image that will be used by the Serverless Worker
 
 There are two options:
