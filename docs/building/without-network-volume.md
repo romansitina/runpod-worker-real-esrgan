@@ -6,7 +6,7 @@ but will obviously create a more bulky Docker image as a result.
 
 You can either use my pre-built Docker image:
 ```
-ashleykza/runpod-worker-real-esrgan:standalone-1.1.2
+ashleykza/runpod-worker-real-esrgan:standalone-1.1.4
 ```
 
 Or alternatively, you can built it yourself following the
