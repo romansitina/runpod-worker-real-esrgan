@@ -70,4 +70,4 @@ ADD rp_handler.py /workspace/runpod-worker-real-esrgan/rp_handler.py
 
 # Start the container
 RUN chmod +x /start.sh
-CMD /start.sh
+ENTRYPOINT /start.sh

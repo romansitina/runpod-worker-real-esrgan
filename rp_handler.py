@@ -4,8 +4,10 @@ import uuid
 import base64
 import cv2
 import glob
+import traceback
 import runpod
 from runpod.serverless.utils.rp_validator import validate
+from runpod.serverless.modules.rp_logger import RunPodLogger
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from basicsr.utils.download_util import load_file_from_url
 from realesrgan import RealESRGANer
@@ -18,6 +20,7 @@ VOLUME_PATH = '/workspace'
 TMP_PATH = f'{VOLUME_PATH}/tmp'
 MODELS_PATH = f'{VOLUME_PATH}/models/ESRGAN'
 GFPGAN_MODEL_PATH = f'{VOLUME_PATH}/models/GFPGAN/GFPGANv1.3.pth'
+logger = RunPodLogger()
 
 
 # ---------------------------------------------------------------------------- #
@@ -212,7 +215,12 @@ def upscaling_api(input):
             half
         )
     except Exception as e:
-        raise
+        logger.error(f'An exception was raised: {e}')
+
+        return {
+            'error': traceback.format_exc(),
+            'refresh_worker': True
+        }
 
     # Clean up temporary images
     os.remove(source_image_path)
@@ -237,7 +245,7 @@ def handler(event):
 
 
 if __name__ == "__main__":
-    print('Starting RunPod Serverless...')
+    logger.info('Starting RunPod Serverless...')
     runpod.serverless.start(
         {
             'handler': handler

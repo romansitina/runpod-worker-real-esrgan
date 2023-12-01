@@ -37,4 +37,4 @@ ADD start_network_volume.sh /start.sh
 
 # Start the container
 RUN chmod +x /start.sh
-CMD /start.sh
+ENTRYPOINT /start.sh
