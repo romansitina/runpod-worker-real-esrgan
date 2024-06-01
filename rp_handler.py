@@ -139,6 +139,7 @@ def upscale(
             upscale=outscale,
             arch='clean',
             channel_multiplier=2,
+            tile=5,
             bg_upsampler=upsampler
         )
 
