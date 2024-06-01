@@ -17,7 +17,7 @@ jobs:
         run: df -h
 
       - name: Clean disk space
-        uses: jlumbroso/free-disk-space@v1:3:1
+        uses: jlumbroso/free-disk-space@latest
 
       - name: Check disk space after clean
         run: df -h
