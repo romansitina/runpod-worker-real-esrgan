@@ -13,7 +13,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Check disk space
+      - name: Check disk space before
+        run: df -h
+
+      - name: Clean disk space
+        uses: jlumbroso/free-disk-space@v1:3:1
+
+      - name: Check disk space after clean
         run: df -h
 
       - name: Set up Docker Buildx
