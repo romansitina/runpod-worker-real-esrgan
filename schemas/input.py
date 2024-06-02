@@ -1,5 +1,9 @@
 INPUT_SCHEMA = {
-    'source_image': {
+    'source_url': {
+        'type': str,
+        'required': True
+    },
+    'output_url': {
         'type': str,
         'required': True
     },
