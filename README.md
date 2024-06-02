@@ -1,6 +1,15 @@
 # Real-ESRGAN | RunPod Serverless Worker
 
-The is the source code for a [RunPod](https://runpod.io?ref=2xxro4sy)
+This repo is forked from https://github.com/ashleykleynhans/runpod-worker-real-esrgan
+
+--- 
+
+## TODO
+- explore https://github.com/Alhasan-Abdellatif/Real-ESRGAN-lp for seamless stitching
+
+---
+
+This is the source code for a [RunPod](https://runpod.io?ref=2xxro4sy)
 Serverless worker that uses [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
 for Restoration/Upscaling.
 

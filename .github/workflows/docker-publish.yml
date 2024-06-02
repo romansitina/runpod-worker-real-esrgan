@@ -37,7 +37,7 @@ jobs:
           context: .
           file: ./Dockerfile.Standalone
           push: true
-          tags: romansitina/worker-real-esrgan:latest
+          tags: romansitina/worker-real-esrgan:v2
 
       - name: Logout from Docker Hub
         run: docker logout
