@@ -4,6 +4,8 @@ import uuid
 import base64
 import cv2
 import glob
+import requests
+import os
 import traceback
 import runpod
 from runpod.serverless.utils.rp_validator import validate
@@ -139,7 +141,6 @@ def upscale(
             upscale=outscale,
             arch='clean',
             channel_multiplier=2,
-            tile=5,
             bg_upsampler=upsampler
         )
 
@@ -170,24 +171,7 @@ def upscale(
         logger.info("7")
         image_data = output_buffer.getvalue()
         logger.info("8")
-        return base64.b64encode(image_data).decode('utf-8')
-
-
-def determine_file_extension(image_data):
-    image_extension = None
-
-    try:
-        if image_data.startswith('/9j/'):
-            image_extension = '.jpg'
-        elif image_data.startswith('iVBORw0Kg'):
-            image_extension = '.png'
-        else:
-            # Default to png if we can't figure out the extension
-            image_extension = '.png'
-    except Exception as e:
-        image_extension = '.png'
-
-    return image_extension
+        return image_data
 
 
 def upscaling_api(input):
@@ -195,7 +179,8 @@ def upscaling_api(input):
         os.makedirs(TMP_PATH)
 
     unique_id = uuid.uuid4()
-    source_image_data = input['source_image']
+    source_url = input['source_url']
+    output_url = input['output_url']
     model_name = input['model']
     outscale = input['scale']
     face_enhance = input['face_enhance']
@@ -204,14 +189,8 @@ def upscaling_api(input):
     pre_pad = input['pre_pad']
     half = input['half']
 
-    # Decode the source image data
-    source_image = base64.b64decode(source_image_data)
-    source_file_extension = determine_file_extension(source_image_data)
-    source_image_path = f'{TMP_PATH}/source_{unique_id}{source_file_extension}'
-
-    # Save the source image to disk
-    with open(source_image_path, 'wb') as source_file:
-        source_file.write(source_image)
+    source_image_path, source_file_extension = download_file_from_presigned_url(source_url,
+                                                                                f'{TMP_PATH}/source_{unique_id}')
 
     try:
         result_image = upscale(
@@ -236,9 +215,42 @@ def upscaling_api(input):
     # Clean up temporary images
     os.remove(source_image_path)
 
+    upload_file_to_presigned_url(output_url, result_image)
+
     return {
-        'image': result_image
+        'image': output_url
     }
+
+
+def download_file_from_presigned_url(presigned_url, save_location):
+    try:
+        response = requests.get(presigned_url)
+        response.raise_for_status()  # Raise an HTTPError if the HTTP request returned an unsuccessful status code
+
+        # Extract the file extension from the URL
+        file_extension = os.path.splitext(presigned_url.split('?')[0])[1]
+        filename = os.path.basename(presigned_url.split('?')[0])
+
+        # Save the file to the given location with the original extension
+        file_path = os.path.join(save_location, filename, file_extension)
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+
+        print(f"File downloaded and saved to {file_path}")
+        return file_path, file_extension
+    except requests.RequestException as e:
+        print(f"An error occurred while trying to download the file: {e}")
+
+
+def upload_file_to_presigned_url(presigned_url, file_bytestream):
+    try:
+        headers = {'Content-Type': 'application/octet-stream'}
+        response = requests.put(presigned_url, data=file_bytestream, headers=headers)
+        response.raise_for_status()  # Raise an HTTPError if the HTTP request returned an unsuccessful status code
+
+        print("File uploaded successfully.")
+    except requests.RequestException as e:
+        print(f"An error occurred while trying to upload the file: {e}")
 
 
 # ---------------------------------------------------------------------------- #
