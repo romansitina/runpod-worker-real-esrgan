@@ -232,7 +232,7 @@ def download_file_from_presigned_url(presigned_url, save_location):
         filename = os.path.basename(presigned_url.split('?')[0])
 
         # Save the file to the given location with the original extension
-        file_path = os.path.join(save_location, filename, file_extension)
+        file_path = os.path.join(save_location, filename)
         with open(file_path, 'wb') as file:
             file.write(response.content)
 
