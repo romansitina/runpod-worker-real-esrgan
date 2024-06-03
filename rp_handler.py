@@ -150,27 +150,18 @@ def upscale(
         raise RuntimeError(f'Source image ({source_image_path}) is corrupt')
 
     try:
-        logger.info("1")
         if face_enhance:
-            logger.info("2")
             _, _, output = face_enhancer.enhance(img, has_aligned=False, only_center_face=False, paste_back=True)
         else:
-            logger.info("3")
             output, _ = upsampler.enhance(img, outscale=outscale)
     except RuntimeError as e:
         logger.info("err", e)
         raise RuntimeError(e)
     else:
-        logger.info("4")
         result_image = Image.fromarray(cv2.cvtColor(output, cv2.COLOR_BGR2RGB))
-        logger.info("5")
         output_buffer = io.BytesIO()
-        logger.info("6")
-        logger.info("buffer size " + output_buffer.getbuffer().nbytes)
         result_image.save(output_buffer, format=image_format)
-        logger.info("7")
         image_data = output_buffer.getvalue()
-        logger.info("8")
         return image_data
 
 
