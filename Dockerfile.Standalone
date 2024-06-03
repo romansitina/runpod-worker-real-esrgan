@@ -57,7 +57,8 @@ RUN pip3 install --no-cache-dir torch==2.0.1 torchvision torchaudio --index-url 
 # 3. Setup the local requirements
 # 4. Create test_input.json file for test inference
 # 5. Run test inference using rp_handler.py to cache the models
-RUN git clone https://github.com/ashleykleynhans/runpod-worker-real-esrgan.git && \
+# TODO change from git to local
+RUN git clone https://github.com/romansitina/runpod-worker-real-esrgan && \
     cd runpod-worker-real-esrgan && \
     pip3 install -r requirements.txt && \
     python3 setup.py develop && \
