@@ -2,6 +2,10 @@
 
 This repo is forked from https://github.com/ashleykleynhans/runpod-worker-real-esrgan
 
+In this version instead of base64 image input and output URL for GET and POST are passed as parameters to overcome the data size API limits.
+
+Tested with S3 pre-signed URLs.
+
 --- 
 
 ## TODO
