@@ -6,6 +6,8 @@ In this version instead of base64 image input and output URL for GET and POST ar
 
 Tested with S3 pre-signed URLs.
 
+It also contains deployment to Docker Hub using GitHub pipelines.  
+
 --- 
 
 ## TODO
