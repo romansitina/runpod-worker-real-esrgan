@@ -11,6 +11,10 @@ from basicsr.archs.rrdbnet_arch import RRDBNet
 from realesrgan import RealESRGANer
 from PIL import Image
 from schemas.input import INPUT_SCHEMA
+import torch
+
+os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:512'
+torch.cuda.empty_cache()
 
 GPU_ID = 0
 VOLUME_PATH = '/workspace'
