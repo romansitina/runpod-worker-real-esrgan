@@ -1,6 +1,9 @@
+import os
 import io
 import uuid
+import base64
 import cv2
+import glob
 import requests
 import os
 import traceback
@@ -8,7 +11,9 @@ import runpod
 from runpod.serverless.utils.rp_validator import validate
 from runpod.serverless.modules.rp_logger import RunPodLogger
 from basicsr.archs.rrdbnet_arch import RRDBNet
+from basicsr.utils.download_util import load_file_from_url
 from realesrgan import RealESRGANer
+# from realesrgan.archs.srvgg_arch import SRVGGNetCompac
 from PIL import Image
 from schemas.input import INPUT_SCHEMA
 import torch
